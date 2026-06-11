@@ -102,7 +102,7 @@ export default function App() {
         <section id="inicio">
           <SmoothScrollHero
             scrollHeight={1500}
-            videoSrc="/wine-hero.mp4"
+            videoSrc="https://antitrouxa-react.vercel.app/wine-hero.mp4"
             desktopImage="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=2670&auto=format&fit=crop"
             mobileImage="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=800&auto=format&fit=crop"
             initialClipPercentage={20}
