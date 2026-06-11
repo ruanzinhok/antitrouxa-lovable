@@ -1,63 +1,98 @@
 import { useState } from "react";
 import { motion, PanInfo } from "framer-motion";
 
+const PHOTO =
+  "https://www.antitrouxa.com/__l5e/assets-v1/6f21f1a0-8b7e-480d-8a28-bb545245a0d4/tainan-hero.png";
+
 const MODULES = [
   {
     num: "01",
     act: "ATO I",
-    title: "A Anatomia do Predador",
-    body: "A estrutura psicológica do homem manipulador. Por que ele age assim? O que ele quer de você. O que o alimenta.",
+    title: "A Anatomia\ndo Predador",
+    body: "A estrutura psicológica do homem manipulador.",
+    // Natural + gold warmth
+    imgFilter: "brightness(1.05) contrast(1.08) saturate(1.1)",
+    overlay: "linear-gradient(160deg, rgba(200,169,81,0.22) 0%, rgba(0,0,0,0) 60%)",
+    accent: "#C8A951",
   },
   {
     num: "02",
     act: "ATO I",
-    title: "Perguntas que Você Nunca Teve Coragem de Fazer",
-    body: "Por que ele age dessa forma? Por que ele conquista e some? Por que alguns te viciam? Quais armas ele usa contra você?",
+    title: "Perguntas que Você\nNunca Teve Coragem",
+    body: "Por que ele conquista e some? Por que alguns te viciam?",
+    // Steel blue — distrust, coldness
+    imgFilter: "sepia(0.55) hue-rotate(195deg) brightness(0.88) contrast(1.1)",
+    overlay: "linear-gradient(160deg, rgba(20,60,180,0.28) 0%, rgba(0,0,0,0) 60%)",
+    accent: "#7EB5E0",
   },
   {
     num: "03",
     act: "ATO I",
-    title: "O Ciclo da Manipulação",
-    body: "As 4 fases que todo relacionamento abusivo segue, sem exceção. E o motivo pelo qual ele sempre volta quando você começa a respirar.",
+    title: "O Ciclo da\nManipulação",
+    body: "As 4 fases que todo relacionamento abusivo segue.",
+    // Dramatic dark — shadow, cycles
+    imgFilter: "contrast(1.45) brightness(0.68) saturate(0.8)",
+    overlay: "linear-gradient(160deg, rgba(80,10,10,0.35) 0%, rgba(0,0,0,0) 60%)",
+    accent: "#E05555",
   },
   {
     num: "04",
     act: "ATO II",
-    title: "A Armadilha da Conexão Falsa",
-    body: "As 6 técnicas que ele usa pra fabricar intimidade em duas semanas. A chave da vulnerabilidade. O ouvinte salvador. Tudo nomeado, tudo desmontado.",
+    title: "A Armadilha da\nConexão Falsa",
+    body: "As 6 técnicas que ele usa pra fabricar intimidade.",
+    // Deep crimson — danger, trap
+    imgFilter: "sepia(0.7) hue-rotate(318deg) saturate(1.6) brightness(0.82)",
+    overlay: "linear-gradient(160deg, rgba(160,20,20,0.3) 0%, rgba(0,0,0,0) 60%)",
+    accent: "#E07070",
   },
   {
     num: "05",
     act: "ATO II",
-    title: "A Fase da Ilusão",
-    body: "As 6 promessas que ele constrói dentro da sua cabeça e nunca cumpre. Love bombing. Futuro de mentira. Fake namoro.",
+    title: "A Fase\nda Ilusão",
+    body: "As 6 promessas que ele constrói e nunca cumpre.",
+    // Violet — illusion, dreams
+    imgFilter: "sepia(0.75) hue-rotate(258deg) saturate(1.4) brightness(0.84)",
+    overlay: "linear-gradient(160deg, rgba(90,10,160,0.28) 0%, rgba(0,0,0,0) 60%)",
+    accent: "#B07FE0",
   },
   {
     num: "06",
     act: "ATO II",
-    title: "As Técnicas de Sedução",
-    body: "Ancoragem. Negging. Push-pull. Cold reading. As armas do manual de PUA — você as reconhece no momento em que forem aplicadas.",
+    title: "As Técnicas\nde Sedução",
+    body: "Ancoragem. Negging. Push-pull. Você as reconhece.",
+    // Teal — cold seduction
+    imgFilter: "sepia(0.55) hue-rotate(170deg) saturate(1.3) brightness(0.88)",
+    overlay: "linear-gradient(160deg, rgba(0,110,120,0.28) 0%, rgba(0,0,0,0) 60%)",
+    accent: "#5EC8C0",
   },
   {
     num: "07",
     act: "ATO II",
-    title: "O Sequestro Mental",
-    body: "As 4 técnicas que o homem dentro da sua vida usa pra te manter ali sem que você perceba. Crédito emocional. Culpa fantasma.",
+    title: "O Sequestro\nMental",
+    body: "As 4 técnicas pra te manter ali sem você perceber.",
+    // Dark green — predatory, entrapment
+    imgFilter: "saturate(0.25) brightness(0.65) contrast(1.3)",
+    overlay: "linear-gradient(160deg, rgba(0,60,20,0.40) 0%, rgba(0,0,0,0) 60%)",
+    accent: "#70C080",
   },
   {
     num: "→",
     act: "ATO III",
-    title: "Protocolo de Virada",
-    body: "Um protocolo executável. Você aplica em qualquer homem e a verdade dele aparece. A partir de agora, você é responsável pelas suas escolhas.",
+    title: "Protocolo\nde Virada",
+    body: "Você aplica em qualquer homem e a verdade dele aparece.",
+    // Full sepia gold — victory, turning the game
+    imgFilter: "sepia(1) contrast(1.15) brightness(1.05)",
+    overlay: "linear-gradient(160deg, rgba(200,169,81,0.38) 0%, rgba(0,0,0,0) 60%)",
+    accent: "#C8A951",
   },
 ];
 
 function getVariant(dist: number) {
   const abs = Math.abs(dist);
   if (abs === 0) return { x: 0,         scale: 1,    opacity: 1,    rotateY: 0,           zIndex: 20, filter: "blur(0px)" };
-  if (abs === 1) return { x: dist * 305, scale: 0.82, opacity: 0.48, rotateY: dist * -14,  zIndex: 10, filter: "blur(0.5px)" };
-  if (abs === 2) return { x: dist * 305, scale: 0.67, opacity: 0.18, rotateY: dist * -20,  zIndex: 5,  filter: "blur(1.5px)" };
-  return               { x: dist * 305, scale: 0.55, opacity: 0,    rotateY: 0,           zIndex: 0,  filter: "blur(3px)" };
+  if (abs === 1) return { x: dist * 290, scale: 0.83, opacity: 0.52, rotateY: dist * -14,  zIndex: 10, filter: "blur(0.5px)" };
+  if (abs === 2) return { x: dist * 290, scale: 0.68, opacity: 0.2,  rotateY: dist * -20,  zIndex: 5,  filter: "blur(1.5px)" };
+  return               { x: dist * 290, scale: 0.55, opacity: 0,    rotateY: 0,           zIndex: 0,  filter: "blur(3px)" };
 }
 
 export function ModuleCarousel() {
@@ -67,25 +102,27 @@ export function ModuleCarousel() {
   const goTo = (i: number) => setActive(Math.max(0, Math.min(i, total - 1)));
 
   const handleDragEnd = (_: unknown, info: PanInfo) => {
-    if (info.offset.x < -60)      goTo(active + 1);
-    else if (info.offset.x > 60)  goTo(active - 1);
+    if (info.offset.x < -60)     goTo(active + 1);
+    else if (info.offset.x > 60) goTo(active - 1);
   };
+
+  const mod = MODULES[active];
 
   return (
     <div className="relative select-none">
 
       {/* Track */}
       <div
-        className="relative mx-auto h-[420px] md:h-[440px]"
+        className="relative mx-auto h-[460px] md:h-[500px]"
         style={{ perspective: 1400, overflow: "hidden" }}
       >
-        {/* Side fade gradients */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-30 w-[15%] bg-gradient-to-r from-[#080808] to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-30 w-[15%] bg-gradient-to-l from-[#080808] to-transparent" />
+        {/* Side fade */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-30 w-[12%] bg-gradient-to-r from-[#080808] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-30 w-[12%] bg-gradient-to-l from-[#080808] to-transparent" />
 
         <div className="absolute inset-0 flex items-center justify-center">
-          {MODULES.map((mod, i) => {
-            const dist  = i - active;
+          {MODULES.map((m, i) => {
+            const dist = i - active;
             const isActive = dist === 0;
 
             return (
@@ -95,7 +132,8 @@ export function ModuleCarousel() {
                 transition={{ type: "spring", stiffness: 310, damping: 30 }}
                 style={{
                   position: "absolute",
-                  width: 272,
+                  width: 260,
+                  height: isActive ? 440 : 420,
                   transformStyle: "preserve-3d",
                   cursor: isActive ? "grab" : "pointer",
                 }}
@@ -106,43 +144,77 @@ export function ModuleCarousel() {
                 whileDrag={{ cursor: "grabbing" }}
                 onClick={() => !isActive && goTo(i)}
               >
-                <div
-                  className={`flex h-[400px] md:h-[420px] flex-col p-7 transition-colors duration-300 ${
-                    isActive
-                      ? "border border-[#C8A951] bg-[#0D0B08]"
-                      : "border border-[#1E1A14] bg-[#090807]"
-                  }`}
-                >
-                  {/* Act */}
-                  <span className="mb-5 block font-ui text-[9px] font-bold tracking-[0.24em] uppercase text-[#C8A951]">
-                    {mod.act}
-                  </span>
+                {/* Card */}
+                <div className="relative h-full w-full overflow-hidden">
 
-                  {/* Big number */}
+                  {/* Photo */}
+                  <img
+                    src={PHOTO}
+                    alt="Tainan Vanzelli"
+                    className="absolute inset-0 h-full w-full object-cover object-top"
+                    style={{ filter: m.imgFilter }}
+                    draggable={false}
+                  />
+
+                  {/* Color overlay */}
                   <div
-                    className="font-editorial font-bold leading-none text-[#C8A951]"
-                    style={{
-                      fontSize: 72,
-                      opacity: isActive ? 0.16 : 0.07,
-                      lineHeight: 1,
-                      marginBottom: 20,
-                    }}
-                  >
-                    {mod.num}
+                    className="absolute inset-0"
+                    style={{ background: m.overlay }}
+                  />
+
+                  {/* Bottom gradient for text legibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/30 to-transparent" />
+
+                  {/* Active border glow */}
+                  {isActive && (
+                    <div
+                      className="pointer-events-none absolute inset-0"
+                      style={{
+                        boxShadow: `inset 0 0 0 1.5px ${m.accent}`,
+                      }}
+                    />
+                  )}
+
+                  {/* Top badge */}
+                  <div className="absolute left-0 right-0 top-5 flex justify-center">
+                    <span
+                      className="border px-3 py-[5px] font-ui text-[9px] font-bold tracking-[0.22em] uppercase"
+                      style={{
+                        borderColor: `${m.accent}55`,
+                        background: `${m.accent}18`,
+                        color: m.accent,
+                      }}
+                    >
+                      {m.act}
+                    </span>
                   </div>
 
-                  {/* Title */}
-                  <h3 className="mb-4 font-editorial text-[20px] font-bold leading-[1.25] text-[#C4BDB3]">
-                    {mod.title}
-                  </h3>
+                  {/* Big number watermark */}
+                  <div
+                    className="absolute left-4 top-14 font-editorial font-bold leading-none text-white"
+                    style={{ fontSize: 80, opacity: 0.07 }}
+                  >
+                    {m.num}
+                  </div>
 
-                  {/* Divider */}
-                  <div className={`mb-5 h-px w-8 ${isActive ? "bg-[#C8A951]" : "bg-[#2A2520]"}`} />
-
-                  {/* Body */}
-                  <p className="mt-auto font-ui text-[13px] font-light leading-[1.78] text-[#8A8070]">
-                    {mod.body}
-                  </p>
+                  {/* Bottom text */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <h3
+                      className="mb-2 font-editorial text-[21px] font-bold leading-[1.2] text-white"
+                      style={{ whiteSpace: "pre-line" }}
+                    >
+                      {m.title}
+                    </h3>
+                    <div
+                      className="mb-3 h-px w-7"
+                      style={{ background: m.accent }}
+                    />
+                    {isActive && (
+                      <p className="font-ui text-[12px] font-light leading-[1.65] text-white/55">
+                        {m.body}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             );
@@ -152,8 +224,6 @@ export function ModuleCarousel() {
 
       {/* Controls */}
       <div className="mt-7 flex flex-col items-center gap-5">
-
-        {/* Arrows + dots */}
         <div className="flex items-center gap-6">
           <button
             onClick={() => goTo(active - 1)}
@@ -163,14 +233,14 @@ export function ModuleCarousel() {
             ←
           </button>
 
-          <div className="flex items-center gap-[8px]">
-            {MODULES.map((_, i) => (
+          <div className="flex items-center gap-[7px]">
+            {MODULES.map((m, i) => (
               <motion.button
                 key={i}
                 onClick={() => goTo(i)}
                 animate={{
                   width:      i === active ? 22 : 6,
-                  background: i === active ? "#C8A951" : "#2A2520",
+                  background: i === active ? m.accent : "#2A2520",
                 }}
                 transition={{ duration: 0.25 }}
                 className="h-[6px] rounded-full border-none"
@@ -187,8 +257,11 @@ export function ModuleCarousel() {
           </button>
         </div>
 
-        {/* Counter */}
-        <p className="font-ui text-[11px] tracking-[0.12em] text-[#8A8070]">
+        {/* Counter with accent color */}
+        <p
+          className="font-ui text-[11px] tracking-[0.14em]"
+          style={{ color: mod.accent }}
+        >
           {String(active + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </p>
       </div>
