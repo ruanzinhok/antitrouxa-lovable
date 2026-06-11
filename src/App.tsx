@@ -10,6 +10,7 @@ import { AuthorImages } from "@/components/author-images";
 import { PatternSection } from "@/components/pattern-section";
 import { FilterSection } from "@/components/filter-section";
 import { CustomCursor } from "@/components/ui/custom-cursor";
+import { ModuleCarousel } from "@/components/ui/module-carousel";
 
 const KIWIFY_URL =
   "https://pay.kiwify.com.br/N4LKQ9J?utm_source=organic&utm_campaign&utm_medium&utm_content&utm_term";
@@ -256,70 +257,9 @@ export default function App() {
               </SectionHeading>
             </Reveal>
 
-            {[
-              {
-                act: "ATO I — A ANATOMIA DO PREDADOR",
-                items: [
-                  {
-                    num: "01",
-                    title: "A Anatomia do Predador",
-                    body: "A estrutura psicológica do homem manipulador. Por que ele age assim? O que ele quer de você. O que o alimenta.",
-                  },
-                  {
-                    num: "02",
-                    title: "Perguntas que Você Nunca Teve Coragem de Fazer",
-                    body: "Por que ele age dessa forma? Por que ele conquista e some? Por que alguns te viciam? Quais armas ele usa contra você?",
-                  },
-                  {
-                    num: "03",
-                    title: "O Ciclo da Manipulação",
-                    body: "As 4 fases que todo relacionamento abusivo segue, sem exceção. E o motivo pelo qual ele sempre volta exatamente quando você começa a respirar.",
-                  },
-                ],
-              },
-              {
-                act: "ATO II — O JOGO DOS PREDADORES",
-                items: [
-                  {
-                    num: "04",
-                    title: "A Armadilha da Conexão Falsa",
-                    body: "As 6 técnicas que ele usa pra fabricar intimidade em duas semanas. A chave da vulnerabilidade. O ouvinte salvador. Tudo nomeado, tudo desmontado.",
-                  },
-                  {
-                    num: "05",
-                    title: "A Fase da Ilusão",
-                    body: "As 6 promessas que ele constrói dentro da sua cabeça e nunca cumpre. Love bombing. Futuro de mentira. Fake namoro. Por que mulher inteligente passa cinco anos esperando proposta que nunca vem.",
-                  },
-                  {
-                    num: "06",
-                    title: "As Técnicas de Sedução",
-                    body: "As 6 armas ensinadas em manual de PUA, livro de sedução, curso fechado de homem pra homem. Ancoragem. Negging. Push-pull. Cold reading. Você reconhece cada uma no momento em que for aplicada.",
-                  },
-                  {
-                    num: "07",
-                    title: "O Sequestro Mental",
-                    body: "As 4 técnicas que o homem já dentro da sua vida usa pra te manter ali sem que você perceba. Crédito emocional. Culpa fantasma. Criador de narrativa.",
-                  },
-                ],
-              },
-              {
-                act: "ATO III — VIRANDO O JOGO",
-                items: [
-                  {
-                    num: "→",
-                    title: "Protocolo de Virada",
-                    body: 'Um protocolo executável. Você aplica em qualquer homem e a verdade dele aparece.<br><br><em style="color:#F0EDE6;">"Enquanto você não sabia, você era vítima das circunstâncias. A partir de agora, você é responsável pelas suas escolhas."</em>',
-                  },
-                ],
-              },
-            ].map((block, bi) => (
-              <Reveal key={bi} delay={bi * 100} className="mb-10">
-                <h3 className="mb-0 border-b border-[rgba(200,169,81,0.18)] pb-[14px] font-ui text-[10px] font-bold tracking-[0.24em] uppercase text-[#C8A951]">
-                  {block.act}
-                </h3>
-                <AccordionGroup items={block.items} />
-              </Reveal>
-            ))}
+            <Reveal delay={200}>
+              <ModuleCarousel />
+            </Reveal>
 
             <Reveal className="mt-8 md:mt-[52px]">
               <Btn href={KIWIFY_URL}>ABRIR O MANUAL — R$ 197,00</Btn>
