@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, PanInfo } from "framer-motion";
 
 const PHOTO =
@@ -95,15 +95,40 @@ function getVariant(dist: number) {
   return               { x: dist * 290, scale: 0.55, opacity: 0,    rotateY: 0,           zIndex: 0,  filter: "blur(3px)" };
 }
 
+const AUTO_DELAY = 3800; // ms between auto-advances
+
 export function ModuleCarousel() {
   const [active, setActive] = useState(0);
   const total = MODULES.length;
+  const timerRef = useRef<ReturnType<typeof setInterval>>();
 
-  const goTo = (i: number) => setActive(Math.max(0, Math.min(i, total - 1)));
+  const goTo = useCallback((i: number) => {
+    setActive(Math.max(0, Math.min(i, total - 1)));
+  }, [total]);
+
+  // Start (or restart) the auto-play timer
+  const startAuto = useCallback(() => {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setActive(prev => (prev >= total - 1 ? 0 : prev + 1));
+    }, AUTO_DELAY);
+  }, [total]);
+
+  // Boot auto-play on mount
+  useEffect(() => {
+    startAuto();
+    return () => clearInterval(timerRef.current);
+  }, [startAuto]);
+
+  // Manual navigate + reset timer
+  const navigate = useCallback((i: number) => {
+    goTo(i);
+    startAuto();
+  }, [goTo, startAuto]);
 
   const handleDragEnd = (_: unknown, info: PanInfo) => {
-    if (info.offset.x < -60)     goTo(active + 1);
-    else if (info.offset.x > 60) goTo(active - 1);
+    if (info.offset.x < -60)     navigate(active + 1);
+    else if (info.offset.x > 60) navigate(active - 1);
   };
 
   const mod = MODULES[active];
@@ -142,7 +167,7 @@ export function ModuleCarousel() {
                 dragElastic={0.08}
                 onDragEnd={handleDragEnd}
                 whileDrag={{ cursor: "grabbing" }}
-                onClick={() => !isActive && goTo(i)}
+                onClick={() => !isActive && navigate(i)}
               >
                 {/* Card */}
                 <div className="relative h-full w-full overflow-hidden">
@@ -226,7 +251,7 @@ export function ModuleCarousel() {
       <div className="mt-7 flex flex-col items-center gap-5">
         <div className="flex items-center gap-6">
           <button
-            onClick={() => goTo(active - 1)}
+            onClick={() => navigate(active - 1)}
             disabled={active === 0}
             className="flex h-11 w-11 items-center justify-center border border-[rgba(200,169,81,0.35)] text-[#C8A951] transition-colors hover:bg-[#C8A951] hover:text-[#080808] disabled:cursor-not-allowed disabled:opacity-20"
           >
@@ -237,7 +262,7 @@ export function ModuleCarousel() {
             {MODULES.map((m, i) => (
               <motion.button
                 key={i}
-                onClick={() => goTo(i)}
+                onClick={() => navigate(i)}
                 animate={{
                   width:      i === active ? 22 : 6,
                   background: i === active ? m.accent : "#2A2520",
@@ -249,7 +274,7 @@ export function ModuleCarousel() {
           </div>
 
           <button
-            onClick={() => goTo(active + 1)}
+            onClick={() => navigate(active + 1)}
             disabled={active === total - 1}
             className="flex h-11 w-11 items-center justify-center border border-[rgba(200,169,81,0.35)] text-[#C8A951] transition-colors hover:bg-[#C8A951] hover:text-[#080808] disabled:cursor-not-allowed disabled:opacity-20"
           >
